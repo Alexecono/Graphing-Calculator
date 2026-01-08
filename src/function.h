@@ -7,6 +7,16 @@
 #include <string>
 using namespace std;
 
+enum class Type {
+    Number, Operator
+};
+
+struct CustomInput {
+    Type type;
+    double number;
+    char operation;
+};
+
 class Function {
 public:
     Function(GLuint newShaderProgram, GLint new_size);
@@ -18,6 +28,7 @@ public:
     void update_vertices();
     void update_function();
 
+
 private:
     GLuint VAO = 0;
     GLuint VBO = 0;
@@ -26,7 +37,10 @@ private:
     GLint input_size;
     vector <float> vertices;
     string input;
-    double evaluate(double x, string new_input, char last_symbol);
+
+    vector<CustomInput> get_custom_vector(double x, string new_input);
+    double evaluate(double x, string new_input);
+    double calculate(double num1, double num2, char operation);
 
 };
 #endif //FUNCTION_H

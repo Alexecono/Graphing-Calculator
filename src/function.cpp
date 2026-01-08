@@ -57,7 +57,7 @@ void Function :: update_vertices() {
         for (double i = -size; i <= size; i+=0.01*sqrt(size)) {
             float x = static_cast<float>(i)/static_cast<float>(size);
             vertices.push_back(x);
-            vertices.push_back(static_cast<float>(evaluate(i, input, ' ') / static_cast<float>(size)));//(evaluate(i, input, ' '))) / (static_cast<float>(size)));
+            vertices.push_back(static_cast<float>(evaluate(i, input) / static_cast<float>(size)));//(evaluate(i, input, ' '))) / (static_cast<float>(size)));
             vertices.push_back(0.0f);
         }
     }
@@ -75,11 +75,7 @@ void Function :: update_function() {
 
 void Function::set_input(string new_input) {
     input.clear();
-    for (int i = 0; i < new_input.size(); i++) {
-        if (new_input[i] != ' ') {
-            input += new_input[i];
-        }
-    }
+    input += new_input;
     input_size = input.size();
 }
 
@@ -87,47 +83,151 @@ string Function :: get_input() {
     return input;
 }
 
+vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
+    vector<CustomInput> v;
+    bool first = true;
 
-double Function :: evaluate(double x, string new_input, char last_symbol) {
-    double y = 0.0;
-    int digits = 1;
+    CustomInput start_input;
+    start_input.type = Type::Number;
+    start_input.number = 0.0;
+    start_input.operation = 0.0;
+    v.push_back(start_input);
 
+    CustomInput start_input2;
+    start_input2.type = Type::Operator;
+    start_input2.number = 0.0;
+    start_input2.operation = '+';
+    v.push_back(start_input2);
     for (int i = 0; i < new_input.size(); i++) {
+
+        if (new_input[i] != ' ' && new_input[i] != '-') {
+            first = false;
+        }
         if (new_input[i] >= '0' && new_input[i] <= '9') {
-            y *= digits;
-            y += new_input[i] - '0';
-            digits = 10;
-        } else {
-            digits = 1;
-        }
-        if (new_input[i] == 'x') {
-            y += x;
-        }
-        if (((new_input[i] >= '0' && new_input[i] <= '9')|| (new_input[i] == 'x'))
-            &&(last_symbol == '-' && i + 1 < new_input.size()
-                && (new_input[i + 1] < 0 || new_input[i + 1] > 9)) || (i == new_input.size() - 1 && last_symbol == '-')) {
-            y *= -1;
+            double number = new_input[i] - '0';
+            bool keep_going = true;
+            while (i + 1 < new_input.size() && keep_going) {
+                if (new_input[i + 1] >= '0' && new_input[i + 1] <= '9') {
+                    number *= 10.0;
+                    number += (new_input[i + 1] - '0');
+                } else if (new_input[i + 1] == 'x') {
+                    number *= x;
+                } else if (new_input[i + 1] == '.') {
+                    double decimal_rate = 10.0;
+                    while (i + 2 < new_input.size() && new_input[i + 2] >= '0' && new_input[i + 2] <= '9') {
+                        number += ((new_input[i + 2] - '0') / decimal_rate);
+                        decimal_rate *= 10.0;
+                        i++;
+                    }
+                } else {
+                    keep_going = false;
+                    i--;
                 }
-        else if (new_input[i] == '+') {
-            string re_input = new_input.substr(i + 1);
-            y += evaluate(x, re_input, '+');
-            break;
-        } else if (new_input[i] == '-') {
-            string re_input = new_input.substr(i + 1);
-            y += evaluate(x, re_input, '-');
-            break;
+                i++;
+            }
+
+            CustomInput input;
+            input.type = Type::Number;
+            input.number = number;
+            input.operation = 0.0;
+            v.push_back(input);
+
+        } else if (new_input[i] == 'x') {
+            CustomInput input;
+            input.type = Type::Number;
+            input.number = x;
+            input.operation = 0.0;
+            v.push_back(input);
         } else if (new_input[i] == '*') {
-            string re_input = new_input.substr(i + 1);
-            y *= evaluate(x, re_input, '*');
-            break;
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = '*';
+            v.push_back(input);
         } else if (new_input[i] == '/') {
-            string re_input = new_input.substr(i + 1);
-            y /= evaluate(x, re_input, '/');
-            break;
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = '/';
+            v.push_back(input);
+        } else if (new_input[i] == '+') {
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = '+';
+            v.push_back(input);
+        } else if (new_input[i] == '-') {
+
+            if (first) {
+                v.erase(v.begin() + 1, v.begin() + 2);
+            }
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = '-';
+            v.push_back(input);
+        } else if (new_input[i] == '^') {
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = '^';
+            v.push_back(input);
         }
     }
 
+    return v;
+}
 
-    return y;
+double Function :: calculate(double num1, double num2, char operation) {
+    if (operation == '+') {
+        return num1 + num2;
+    } else if (operation == '-') {
+        return num1 - num2;
+    } else if (operation == '*') {
+        return num1 * num2;
+    } else if (operation == '/') {
+        return num1 / num2;
+    } else if (operation == '^') {
+        return pow(num1, num2);
+    }
+}
+
+double Function :: evaluate(double x, string new_input) {
+    vector<CustomInput> custom_vector = get_custom_vector(x, new_input);
+
+    for (int i = 0; i < custom_vector.size(); i++) {
+        if (custom_vector[i].operation == '^') {
+            if (i + 1 < custom_vector.size()) {
+                double result = calculate(custom_vector[i-1].number, custom_vector[i+1].number, custom_vector[i].operation);
+                custom_vector[i-1] = CustomInput {Type::Number, result, 0};
+                custom_vector.erase(custom_vector.begin() + i, custom_vector.begin() + i + 2);
+                i--;
+            }
+        }
+    }
+
+    for (int i = 0; i < custom_vector.size(); i++) {
+        if (custom_vector[i].operation == '*' || custom_vector[i].operation == '/') {
+            if (i + 1 < custom_vector.size()) {
+                double result = calculate(custom_vector[i-1].number, custom_vector[i+1].number, custom_vector[i].operation);
+                custom_vector[i-1] = CustomInput {Type::Number, result, 0};
+                custom_vector.erase(custom_vector.begin() + i, custom_vector.begin() + i + 2);
+                i--;
+            }
+        }
+    }
+
+    for (int i = 0; i < custom_vector.size(); i++) {
+        if (custom_vector[i].operation == '+' || custom_vector[i].operation == '-') {
+            if (i + 1 < custom_vector.size()) {
+                double result = calculate(custom_vector[i-1].number, custom_vector[i+1].number, custom_vector[i].operation);
+                custom_vector[i-1] = CustomInput {Type::Number, result, 0};
+                custom_vector.erase(custom_vector.begin() + i, custom_vector.begin() + i + 2);
+                i--;
+            }
+        }
+    }
+
+    return custom_vector[0].number;
 }
 
