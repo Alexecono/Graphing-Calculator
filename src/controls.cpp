@@ -55,8 +55,8 @@ void handle_pan(GLFWwindow* window) {
             double dy = y - last_y;
 
 
-            x_centre += dx * 0.01;
-            y_centre -= dy * 0.01;
+            x_centre += dx * 0.001 * size;
+            y_centre -= dy * 0.001 * size;
 
             last_x = x;
             last_y = y;
