@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-Function :: Function(GLuint newShaderProgram, GLint new_size) : shaderProgram(newShaderProgram), size(new_size), input_size(0){
+Function :: Function(GLuint newShaderProgram, GLint new_size) : shaderProgram(newShaderProgram), size(new_size), input_size(0), x_centre(0), y_centre(0){
 
 
 
@@ -50,14 +50,20 @@ void Function :: set_size(GLint new_size) {
     size = new_size;
 }
 
+void Function :: set_centre(double new_x_centre, double new_y_centre) {
+    x_centre = new_x_centre;
+    y_centre = new_y_centre;
+
+}
+
 void Function :: update_vertices() {
     vertices.clear();
 
     if (input_size != 0) {
         for (double i = -size; i <= size; i+=0.01*sqrt(size)) {
-            float x = static_cast<float>(i)/static_cast<float>(size);
+            float x = (static_cast<float>(i + x_centre))/(static_cast<float>(size));
             vertices.push_back(x);
-            vertices.push_back(static_cast<float>(evaluate(i, input) / static_cast<float>(size)));//(evaluate(i, input, ' '))) / (static_cast<float>(size)));
+            vertices.push_back(static_cast<float>(evaluate(i, input) + y_centre) / (static_cast<float>(size)));
             vertices.push_back(0.0f);
         }
     }

@@ -14,7 +14,6 @@ using namespace std;
 
 int main() {
     glfwInit();
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -36,7 +35,7 @@ int main() {
 
 
     Shader shader;
-    Axis axis (shader.getShaderProgram());
+    Axis axis (shader.getShaderProgram(), 30);
     Grid grid(shader.getShaderProgram(), 30);
     Function function(shader.getShaderProgram(), 30);
     Input input(window);
@@ -47,14 +46,25 @@ int main() {
 
         if (!is_fresh()) {
             grid.set_size(get_size());
-            grid.update_grid();
             function.set_size(get_size());
+            axis.set_size(get_size());
             set_fresh();
         }
 
+        double x_centre = get_x_centre();
+        double y_centre = get_y_centre();
+
+        handle_pan(window);
+        function.set_centre(x_centre, y_centre);
+        grid.set_centre(x_centre, y_centre);
+        axis.set_centre(x_centre, y_centre);
+
+        grid.update_grid();
+        function.update_function();
+        axis.update_axis();
+
         grid.draw();
         axis.draw();
-        function.update_function();
         function.draw();
 
         input.set_input();

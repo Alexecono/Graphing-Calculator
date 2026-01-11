@@ -24,6 +24,7 @@ public:
     void draw() const;
     void set_size(GLint new_size);
     void set_input(string new_input);
+    void set_centre(double new_x_centre, double new_y_centre);
     string get_input();
     void update_vertices();
     void update_function();
@@ -35,6 +36,8 @@ private:
     GLuint shaderProgram;
     GLint size;
     GLint input_size;
+    double x_centre;
+    double y_centre;
     vector <float> vertices;
     string input;
 

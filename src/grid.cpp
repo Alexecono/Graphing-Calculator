@@ -1,8 +1,8 @@
 #include "grid.h"
 #include <vector>
-using namespace std;
 
-Grid :: Grid(GLuint newShaderProgram, GLint new_size) : shaderProgram(newShaderProgram), size(new_size){
+
+Grid :: Grid(GLuint newShaderProgram, GLint new_size) : shaderProgram(newShaderProgram), size(new_size), x_centre(0), y_centre(0) {
 
 
 
@@ -43,11 +43,19 @@ void Grid :: set_size(GLint new_size) {
     size = new_size;
 }
 
+void Grid :: set_centre(double new_x_centre, double new_y_centre) {
+    x_centre = new_x_centre;
+    y_centre = new_y_centre;
+}
+
 void Grid :: update_vertices() {
     vertices.clear();
+    float inv_size = 1.0f / (static_cast<float>(size));
+    float y_offset = static_cast<float>(y_centre);
+    float x_offset = static_cast<float>(x_centre);
 
-    for (int i = 0; i <= size; i++) {
-        GLfloat y = (static_cast<float>(i) / static_cast<float>(size));
+    for (int i = -5000; i <= 5000; i++) {
+        GLfloat y = (static_cast<float>(i) + y_offset) * inv_size;
 
         vertices.push_back(-1.0f);
         vertices.push_back(y);
@@ -55,34 +63,18 @@ void Grid :: update_vertices() {
 
         vertices.push_back(1.0f);
         vertices.push_back(y);
-        vertices.push_back(0.0f);
-
-        vertices.push_back(-1.0f);
-        vertices.push_back(-y);
-        vertices.push_back(0.0f);
-
-        vertices.push_back(1.0f);
-        vertices.push_back(-y);
         vertices.push_back(0.0f);
     }
 
-    for (int j = 0; j <= size; j++) {
+    for (int j = -5000; j <= 5000; j++) {
 
-        GLfloat x = (static_cast<float>(j) / static_cast<float>(size));
+        GLfloat x = (static_cast<float>(j) + x_offset) * inv_size;
 
         vertices.push_back(x);
         vertices.push_back(-1.0f);
         vertices.push_back(0.0f);
 
         vertices.push_back(x);
-        vertices.push_back(1.0f);
-        vertices.push_back(0.0f);
-
-        vertices.push_back(-x);
-        vertices.push_back(-1.0f);
-        vertices.push_back(0.0f);
-
-        vertices.push_back(-x);
         vertices.push_back(1.0f);
         vertices.push_back(0.0f);
     }
