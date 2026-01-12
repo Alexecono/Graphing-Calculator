@@ -59,13 +59,14 @@ void Function :: set_centre(double new_x_centre, double new_y_centre) {
 void Function :: update_vertices() {
     vertices.clear();
     int adjustment = 0;
+    if (x_centre < 0) {
+        adjustment = -x_centre;
+    } else {
+        adjustment = x_centre;
+    }
     if (input_size != 0) {
-        if (x_centre >= 0) {
-            adjustment = x_centre;
-        } else {
-            adjustment = -x_centre;
-        }
-        for (double i = -size - 200; i <= size + adjustment; i+=0.01*sqrt(size)) {
+
+        for (double i = -size - adjustment - 1; i <= size + adjustment + 1; i+=0.01*sqrt(size)) {
             float x = (static_cast<float>(i + x_centre))/(static_cast<float>(size));
             vertices.push_back(x);
             vertices.push_back(static_cast<float>(evaluate(i, input) + y_centre) / (static_cast<float>(size)));
