@@ -42,7 +42,7 @@ private:
     string input;
 
     vector<CustomInput> get_custom_vector(double x, string new_input);
-    double evaluate(double x, string new_input);
+    double evaluate(double x, string new_input, vector<CustomInput> brackets_vector = {}, bool brackets = false);
     double calculate(double num1, double num2, char operation);
 
 };

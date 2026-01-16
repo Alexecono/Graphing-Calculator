@@ -199,6 +199,18 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             input.number = 0.0;
             input.operation = '^';
             v.push_back(input);
+        } else if (new_input[i] == '(') {
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = '(';
+            v.push_back(input);
+        } else if (new_input[i] == ')') {
+            CustomInput input;
+            input.type = Type::Operator;
+            input.number = 0.0;
+            input.operation = ')';
+            v.push_back(input);
         }
     }
 
@@ -219,8 +231,36 @@ double Function :: calculate(double num1, double num2, char operation) {
     }
 }
 
-double Function :: evaluate(double x, string new_input) {
-    vector<CustomInput> custom_vector = get_custom_vector(x, new_input);
+double Function :: evaluate(double x, string new_input, vector<CustomInput> brackets_vector, bool brackets) {
+    vector<CustomInput> custom_vector;
+    if (!brackets) {
+        custom_vector = get_custom_vector(x, new_input);
+    } else {
+        custom_vector = brackets_vector;
+    }
+
+    for (int i = 0; i < custom_vector.size(); i++) {
+        if (custom_vector[i].operation == '(') {
+            int depth = 1;
+            for (int j = i + 1; j < custom_vector.size(); j++) {
+                if (custom_vector[j].operation == '(') {
+                    depth++;
+                }
+                if (custom_vector[j].operation == ')') {
+                    depth--;
+                    if (depth == 0) {
+                        vector<CustomInput> sub_custom_vector(custom_vector.begin() + i + 1, custom_vector.begin() + j);
+                        double result = evaluate(x, " ", sub_custom_vector, true);
+                        custom_vector[i] = CustomInput {Type::Number, result, 0};
+                        custom_vector.erase(custom_vector.begin() + i + 1, custom_vector.begin() + j +  1);
+                        i--;
+                        break;
+                    }
+
+                }
+            }
+        }
+    }
 
     for (int i = 0; i < custom_vector.size(); i++) {
         if (custom_vector[i].operation == '^') {
