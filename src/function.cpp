@@ -181,7 +181,7 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             v.push_back(input);
         } else if (new_input[i] == '-') {
 
-            if ((new_input[i - 1] == '+' || new_input[i - 1] == '/' || new_input[i - 1] == '-') && !first) {
+            if ((new_input[i - 1] == '+' || new_input[i - 1] == '/' || new_input[i - 1] == '-' || new_input[i-1] == '(' || new_input[i-1] == '*') && !first) {
                 make_negative  = true;
             } else {
                 if (first) {
