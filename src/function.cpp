@@ -1,4 +1,6 @@
 #include "function.h"
+
+#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -98,6 +100,7 @@ string Function :: get_input() {
 vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
     vector<CustomInput> v;
     bool first = true;
+    bool make_negative = false;
 
     CustomInput start_input;
     start_input.type = Type::Number;
@@ -137,7 +140,10 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
                 }
                 i++;
             }
-
+            if (make_negative) {
+                number *= -1.0;
+                make_negative = false;
+            }
             CustomInput input;
             input.type = Type::Number;
             input.number = number;
@@ -147,7 +153,12 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
         } else if (new_input[i] == 'x') {
             CustomInput input;
             input.type = Type::Number;
-            input.number = x;
+            if (make_negative) {
+                input.number = -1.0 * x;
+                make_negative = false;
+            } else {
+                input.number = x;
+            }
             input.operation = 0.0;
             v.push_back(input);
         } else if (new_input[i] == '*') {
@@ -170,14 +181,18 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             v.push_back(input);
         } else if (new_input[i] == '-') {
 
-            if (first) {
-                v.erase(v.begin() + 1, v.begin() + 2);
+            if ((new_input[i - 1] == '+' || new_input[i - 1] == '/' || new_input[i - 1] == '-') && !first) {
+                make_negative  = true;
+            } else {
+                if (first) {
+                    v.erase(v.begin() + 1, v.begin() + 2);
+                }
+                CustomInput input;
+                input.type = Type::Operator;
+                input.number = 0.0;
+                input.operation = '-';
+                v.push_back(input);
             }
-            CustomInput input;
-            input.type = Type::Operator;
-            input.number = 0.0;
-            input.operation = '-';
-            v.push_back(input);
         } else if (new_input[i] == '^') {
             CustomInput input;
             input.type = Type::Operator;
