@@ -211,6 +211,15 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             input.number = 0.0;
             input.operation = ')';
             v.push_back(input);
+        } else if (new_input[i] == 's') {
+            if (i + 2 < new_input.size() && new_input[i + 1] == 'i' && new_input[i + 2] == 'n') {
+                CustomInput input;
+                input.type = Type::Operator;
+                input.number = 0.0;
+                input.operation = 's';
+                v.push_back(input);
+                i += 2;
+            }
         }
     }
 
@@ -228,6 +237,8 @@ double Function :: calculate(double num1, double num2, char operation) {
         return num1 / num2;
     } else if (operation == '^') {
         return pow(num1, num2);
+    } else if (operation == 's') {
+        return sin(num1);
     }
 }
 
@@ -258,6 +269,17 @@ double Function :: evaluate(double x, string new_input, vector<CustomInput> brac
                     }
 
                 }
+            }
+        }
+    }
+
+    for (int i = 0; i < custom_vector.size(); i++) {
+        if (custom_vector[i].operation == 's') {
+            if (i + 1 < custom_vector.size()) {
+                double result = calculate(custom_vector[i+1].number, 0, custom_vector[i].operation);
+                custom_vector[i] = CustomInput {Type::Number, result, 0};
+                custom_vector.erase(custom_vector.begin() + i + 1);
+                i--;
             }
         }
     }
