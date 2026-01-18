@@ -150,6 +150,14 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             input.operation = 0.0;
             v.push_back(input);
 
+            if (i+1 < new_input.size() && new_input[i+1] == '(') {
+                CustomInput input;
+                input.type = Type::Operator;
+                input.number = 0.0;
+                input.operation = '*';
+                v.push_back(input);
+            }
+
         } else if (new_input[i] == 'x') {
             CustomInput input;
             input.type = Type::Number;
@@ -161,6 +169,14 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             }
             input.operation = 0.0;
             v.push_back(input);
+
+            if (i+1 < new_input.size() && new_input[i+1] == '(') {
+                CustomInput input;
+                input.type = Type::Operator;
+                input.number = 0.0;
+                input.operation = '*';
+                v.push_back(input);
+            }
         } else if (new_input[i] == '*') {
             CustomInput input;
             input.type = Type::Operator;
@@ -211,6 +227,14 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             input.number = 0.0;
             input.operation = ')';
             v.push_back(input);
+
+            if (i+1 < new_input.size() && new_input[i+1] == '(') {
+                CustomInput input;
+                input.type = Type::Operator;
+                input.number = 0.0;
+                input.operation = '*';
+                v.push_back(input);
+            }
         } else if (new_input[i] == 's') {
             if (i + 2 < new_input.size() && new_input[i + 1] == 'i' && new_input[i + 2] == 'n') {
                 CustomInput input;
