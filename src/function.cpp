@@ -89,7 +89,11 @@ void Function :: update_function() {
 
 void Function::set_input(string new_input) {
     input.clear();
-    input += new_input;
+    for (int i = 0; i < new_input.size(); i++) {
+        if (new_input[i] != ' ') {
+            input += new_input[i];
+        }
+    }
     input_size = input.size();
 }
 
