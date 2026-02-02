@@ -14,7 +14,7 @@ int get_size();
 
 bool is_fresh();
 
-bool set_fresh();
+void set_fresh();
 
 void handle_pan(GLFWwindow* window);
 

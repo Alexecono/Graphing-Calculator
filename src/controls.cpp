@@ -1,6 +1,10 @@
 #include "controls.h"
-#include <iostream>
 
+
+constexpr int min_size = 2;
+constexpr int max_size = 5000;
+constexpr int zoom_speed = 2;
+constexpr float pan_factor = 0.001;
 int size = 30;
 double last_x = 0.0;
 double last_y = 0.0;
@@ -11,18 +15,18 @@ bool fresh = true;
 
 void change_zoom(GLFWwindow* window, double x_offset, double y_offset) {
     if (y_offset > 0.0) {
-        size += 2;
+        size += zoom_speed;
     }
     if (y_offset < 0.0) {
-        size -= 2;
+        size -= zoom_speed;
     }
 
-    if (size < 2) {
-        size = 2;
+    if (size < min_size) {
+        size = min_size;
     }
 
-    if (size > 5000) {
-        size = 5000;
+    if (size > max_size) {
+        size = max_size;
     }
 
     fresh = false;
@@ -55,8 +59,8 @@ void handle_pan(GLFWwindow* window) {
             double dy = y - last_y;
 
 
-            x_centre += dx * 0.001 * size;
-            y_centre -= dy * 0.001 * size;
+            x_centre += dx * pan_factor * size;
+            y_centre -= dy * pan_factor * size;
 
             last_x = x;
             last_y = y;
@@ -67,9 +71,8 @@ void handle_pan(GLFWwindow* window) {
 }
 
 
-bool set_fresh() {
+void set_fresh() {
     fresh = true;
-    return fresh;
 }
 
 double get_x_centre() {
