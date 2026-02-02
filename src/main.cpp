@@ -13,6 +13,7 @@ using namespace std;
 
 
 int main() {
+    constexpr int default_grid_size = 30;
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -35,9 +36,9 @@ int main() {
 
 
     Shader shader;
-    Axis axis (shader.getShaderProgram(), 30);
-    Grid grid(shader.getShaderProgram(), 30);
-    Function function(shader.getShaderProgram(), 30);
+    Axis axis (shader.getShaderProgram(), default_grid_size);
+    Grid grid(shader.getShaderProgram(), default_grid_size);
+    Function function(shader.getShaderProgram(), default_grid_size);
     Input input(window);
 
     glfwSetScrollCallback(window, change_zoom);
