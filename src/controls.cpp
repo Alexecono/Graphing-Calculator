@@ -4,6 +4,7 @@
 
 constexpr int min_size = 2;
 constexpr int max_size = 5000;
+constexpr int min_speed = 2;
 constexpr float zoom_speed_factor = 0.01;
 constexpr float pan_factor = 0.001;
 int size = 30;
@@ -16,10 +17,10 @@ bool fresh = true;
 
 void change_zoom(GLFWwindow* window, double x_offset, double y_offset) {
     if (y_offset > 0.0) {
-        size += std::max(2, static_cast<int>(std::round(zoom_speed_factor * size)));
+        size += std::max(min_speed, static_cast<int>(std::round(zoom_speed_factor * size)));
     }
     if (y_offset < 0.0) {
-        size -= std::max(2, static_cast<int>(std::round(zoom_speed_factor * size)));
+        size -= std::max(min_speed, static_cast<int>(std::round(zoom_speed_factor * size)));
     }
 
     if (size < min_size) {
