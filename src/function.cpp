@@ -1,6 +1,5 @@
 #include "function.h"
 
-#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <iostream>
