@@ -1,6 +1,7 @@
 #include "grid.h"
 #include <vector>
 
+constexpr int max_size = 5000;
 
 Grid :: Grid(GLuint newShaderProgram, GLint new_size) : shaderProgram(newShaderProgram), size(new_size), x_centre(0), y_centre(0) {
 
@@ -54,7 +55,7 @@ void Grid :: update_vertices() {
     float y_offset = static_cast<float>(y_centre);
     float x_offset = static_cast<float>(x_centre);
 
-    for (int i = -5000; i <= 5000; i++) {
+    for (int i = -max_size; i <= max_size; i++) {
         GLfloat y = (static_cast<float>(i) + y_offset) * inv_size;
 
         vertices.push_back(-1.0f);
@@ -66,7 +67,7 @@ void Grid :: update_vertices() {
         vertices.push_back(0.0f);
     }
 
-    for (int j = -5000; j <= 5000; j++) {
+    for (int j = -max_size; j <= max_size; j++) {
 
         GLfloat x = (static_cast<float>(j) + x_offset) * inv_size;
 

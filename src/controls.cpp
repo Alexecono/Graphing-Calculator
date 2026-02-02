@@ -1,9 +1,10 @@
 #include "controls.h"
+#include <cmath>
 
 
 constexpr int min_size = 2;
 constexpr int max_size = 5000;
-constexpr int zoom_speed = 2;
+constexpr float zoom_speed_factor = 0.01;
 constexpr float pan_factor = 0.001;
 int size = 30;
 double last_x = 0.0;
@@ -15,10 +16,10 @@ bool fresh = true;
 
 void change_zoom(GLFWwindow* window, double x_offset, double y_offset) {
     if (y_offset > 0.0) {
-        size += zoom_speed;
+        size += std::max(2, static_cast<int>(std::round(zoom_speed_factor * size)));
     }
     if (y_offset < 0.0) {
-        size -= zoom_speed;
+        size -= std::max(2, static_cast<int>(std::round(zoom_speed_factor * size)));
     }
 
     if (size < min_size) {
