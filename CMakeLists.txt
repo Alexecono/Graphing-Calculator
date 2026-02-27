@@ -4,9 +4,6 @@ project(GraphingCalculator)
 set(CMAKE_CXX_STANDARD 17)
 
 
-set(GLFW_DIR "C:/Users/aecon/0 - LIBRAIRIES/glfw-3.4.bin.WIN64")
-
-
 add_executable(GraphingCalculator
         src/main.cpp
         src/glad.c
@@ -36,13 +33,15 @@ add_executable(GraphingCalculator
 
 
 target_include_directories(GraphingCalculator PRIVATE
-        ${GLFW_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 
-target_link_libraries(GraphingCalculator
-        ${GLFW_DIR}/lib-mingw-w64/libglfw3.a
-        opengl32
+find_package(OpenGL REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+
+target_link_libraries(GraphingCalculator PRIVATE
+        OpenGL::GL
+        glfw
 )
 
