@@ -73,5 +73,5 @@ cmake --build .
 ./GraphingCalculator
 
 # Windows
-GraphingCalculator.exe
+./GraphingCalculator.exe
 ```
