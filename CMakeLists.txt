@@ -30,7 +30,9 @@ target_include_directories(GraphingCalculator PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-
+if(WIN32)
+    set(OpenGL_GL_PREFERENCE "GLVND")
+endif()
 find_package(OpenGL REQUIRED)
 
 include(FetchContent)

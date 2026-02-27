@@ -1,0 +1,13 @@
+# Ignore build folder
+/build/
+
+# Ignore executables and object files
+*.exe
+*.obj
+*.o
+*.dll
+*.log
+
+# Ignore OS files (optional)
+Thumbs.db
+.DS_Store
