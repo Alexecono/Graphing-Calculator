@@ -3,7 +3,6 @@ project(GraphingCalculator)
 
 set(CMAKE_CXX_STANDARD 17)
 
-
 add_executable(GraphingCalculator
         src/main.cpp
         src/glad.c
@@ -25,18 +24,11 @@ add_executable(GraphingCalculator
         include/imgui_impl_opengl3.h
 )
 
-
 target_include_directories(GraphingCalculator PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-if(WIN32)
-    set(OpenGL_GL_PREFERENCE "GLVND")
-endif()
-find_package(OpenGL REQUIRED)
-
 include(FetchContent)
-
 
 FetchContent_Declare(
         glfw
@@ -46,14 +38,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glfw)
 
 
-FetchContent_Declare(
-        imgui
-        GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG master
-)
-FetchContent_MakeAvailable(imgui)
 
-target_link_libraries(GraphingCalculator PRIVATE
-        OpenGL::GL
-        glfw
-)
+if(WIN32)
+    target_link_libraries(GraphingCalculator PRIVATE
+            glfw
+            opengl32
+    )
+else()
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(GraphingCalculator PRIVATE
+            glfw
+            OpenGL::GL
+    )
+endif()
