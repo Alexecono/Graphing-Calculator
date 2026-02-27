@@ -29,6 +29,7 @@ void Input :: set_input(){
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
     ImGui::Begin("Function Input");
     ImGui::Text("f(x) =");
     ImGui::SameLine();
