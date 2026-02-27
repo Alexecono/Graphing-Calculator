@@ -7,16 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(GraphingCalculator
         src/main.cpp
         src/glad.c
-        src/axis.h
         src/axis.cpp
-        src/shaders.h
         src/shaders.cpp
-        src/grid.h
         src/grid.cpp
-        src/controls.h
         src/controls.cpp
-        src/function.h
         src/function.cpp
+        src/input.cpp
         src/imgui.cpp
         src/imgui_draw.cpp
         src/imgui_impl_glfw.cpp
@@ -27,8 +23,6 @@ add_executable(GraphingCalculator
         include/imgui.h
         include/imgui_impl_glfw.h
         include/imgui_impl_opengl3.h
-        src/input.h
-        src/input.cpp
 )
 
 
@@ -38,10 +32,26 @@ target_include_directories(GraphingCalculator PRIVATE
 
 
 find_package(OpenGL REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
+
+include(FetchContent)
+
+
+FetchContent_Declare(
+        glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG latest
+)
+FetchContent_MakeAvailable(glfw)
+
+
+FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG master
+)
+FetchContent_MakeAvailable(imgui)
 
 target_link_libraries(GraphingCalculator PRIVATE
         OpenGL::GL
         glfw
 )
-
