@@ -1,15 +1,21 @@
-# Ignore build folder
-/build/
+# Build directory
+build/
 
-# Ignore executables and object files
-/build/
+# CMake build folders
+cmake-build-*/
+
+# JetBrains IDE files
+.idea/
+
+# Executables and compiled files
 *.exe
 *.obj
 *.o
 *.dll
+
+# Logs
 *.log
 
-
-# Ignore OS files (optional)
+# OS junk
 Thumbs.db
 .DS_Store
