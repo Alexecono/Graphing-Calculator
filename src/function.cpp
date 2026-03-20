@@ -173,7 +173,7 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             input.operation = 0.0;
             v.push_back(input);
 
-            if (i+1 < new_input.size() && new_input[i+1] == '(') {
+            if ( (i+1 < new_input.size()) && (new_input[i+1] == '(' || new_input[i+1] == 'x') )  {
                 CustomInput input;
                 input.type = Type::Operator;
                 input.number = 0.0;
