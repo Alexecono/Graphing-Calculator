@@ -19,7 +19,7 @@ struct CustomInput {
 
 class Function {
 public:
-    Function(GLuint newShaderProgram, GLint new_size);
+    Function(GLuint newShaderProgram, GLint new_size, float new_red, float new_green, float new_blue);
     ~Function();
     void draw() const;
     void set_size(GLint new_size);
@@ -33,6 +33,9 @@ public:
 private:
     GLuint VAO = 0;
     GLuint VBO = 0;
+    float red;
+    float green;
+    float blue;
     GLuint shaderProgram;
     GLint size;
     GLint input_size;

@@ -5,7 +5,8 @@
 #include <iostream>
 using namespace std;
 
-Function :: Function(GLuint newShaderProgram, GLint new_size) : shaderProgram(newShaderProgram), size(new_size), input_size(0), x_centre(0), y_centre(0){
+Function :: Function(GLuint newShaderProgram, GLint new_size, float new_red, float new_green, float new_blue) :
+shaderProgram(newShaderProgram), size(new_size), input_size(0), x_centre(0), y_centre(0), red(new_red), green(new_green), blue(new_blue){
 
 
 
@@ -41,7 +42,7 @@ void Function :: draw() const {
     if (!input.empty()) {
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glUniform3f(glGetUniformLocation(shaderProgram, "colour"),1.0f, 0.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(shaderProgram, "colour"),red, green, blue);
         glDrawArrays(GL_LINE_STRIP, 0, vertices.size()/3);
         glBindVertexArray(0);
     }

@@ -29,19 +29,30 @@ void Input :: set_input(){
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(320, 130), ImGuiCond_Once);
     ImGui::Begin("Function Input");
+
     ImGui::Text("f(x) =");
     ImGui::SameLine();
-    ImGui::InputText("##fx", input, 128);
+    ImGui::InputText("##fx", input1, 128);
+
+    ImGui::Text("g(x) =");
+    ImGui::SameLine();
+    ImGui::InputText("##gx", input2, 128);
+
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 }
 
-string Input :: get_input() {
-    string str(input);
+string Input :: get_input1() {
+    string str(input1);
+    return str;
+}
+
+string Input :: get_input2() {
+    string str(input2);
     return str;
 }
 

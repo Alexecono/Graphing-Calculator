@@ -38,7 +38,8 @@ int main() {
     Shader shader;
     Axis axis (shader.getShaderProgram(), default_grid_size);
     Grid grid(shader.getShaderProgram(), default_grid_size);
-    Function function(shader.getShaderProgram(), default_grid_size);
+    Function function1(shader.getShaderProgram(), default_grid_size, 1.0f, 0.0f, 0.0f);
+    Function function2(shader.getShaderProgram(), default_grid_size, 0.0f, 0.0f, 1.0f);
     Input input(window);
 
     glfwSetScrollCallback(window, change_zoom);
@@ -47,7 +48,8 @@ int main() {
 
         if (!is_fresh()) {
             grid.set_size(get_size());
-            function.set_size(get_size());
+            function1.set_size(get_size());
+            function2.set_size(get_size());
             axis.set_size(get_size());
             set_fresh();
         }
@@ -56,20 +58,24 @@ int main() {
         double y_centre = get_y_centre();
 
         handle_pan(window);
-        function.set_centre(x_centre, y_centre);
+        function1.set_centre(x_centre, y_centre);
+        function2.set_centre(x_centre, y_centre);
         grid.set_centre(x_centre, y_centre);
         axis.set_centre(x_centre, y_centre);
 
         grid.update_grid();
-        function.update_function();
+        function1.update_function();
+        function2.update_function();
         axis.update_axis();
 
         grid.draw();
         axis.draw();
-        function.draw();
+        function1.draw();
+        function2.draw();
 
         input.set_input();
-        function.set_input(input.get_input());
+        function1.set_input(input.get_input1());
+        function2.set_input(input.get_input2());
 
         glfwSwapBuffers(window);
         glfwPollEvents();
