@@ -366,7 +366,9 @@ double Function :: evaluate(double x, string new_input, vector<CustomInput> brac
             }
         }
     }
-
+    if (custom_vector.size() == 0){
+        return 0.0;
+    }
     return custom_vector[0].number;
 }
 
