@@ -8,7 +8,8 @@ All required dependencies (GLFW) are automatically downloaded and built via CMak
 
 ## Features
 
-- Interactive 2D plotting  
+- Interactive 2D plotting
+- Plot multiple functions  
 - Smooth zoom and pan  
 - Function input and dynamic rendering  
 - Supports decimals, brackets, ln, sin, cos, and elementary mathematical functions  
