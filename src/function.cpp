@@ -318,7 +318,6 @@ double Function::answer(vector<CustomInput> custom_vector, const double& x) {
     for (int i = 0; i < custom_vector.size(); i++) {
         if (custom_vector[i].type == Type::Variable) {
             custom_vector[i].number = x;
-            cout << x << endl;
         }
     }
 
