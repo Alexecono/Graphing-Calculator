@@ -29,6 +29,7 @@ shaderProgram(newShaderProgram), size(new_size), input_size(0), x_centre(0), y_c
     glBindVertexArray(0);
 
     input = "";
+    function = {};
 }
 
 Function :: ~Function() {
@@ -67,12 +68,13 @@ void Function :: update_vertices() {
         adjustment = x_centre;
     }
     if (input_size != 0) {
-
+        bool needs_update = true;
         for (double i = -size - adjustment - 1; i <= size + adjustment + 1; i+=0.01*sqrt(size)) {
             float x = (static_cast<float>(i + x_centre))/(static_cast<float>(size));
             vertices.push_back(x);
-            vertices.push_back(static_cast<float>(evaluate(i, input) + y_centre) / (static_cast<float>(size)));
+            vertices.push_back(static_cast<float>(evaluate(i, input, needs_update) + y_centre) / (static_cast<float>(size)));
             vertices.push_back(0.0f);
+            needs_update = false;
         }
     }
 }
@@ -101,8 +103,8 @@ string Function :: get_input() {
     return input;
 }
 
-vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
-    vector<CustomInput> v;
+void Function :: get_custom_vector(double x, string new_input) {
+    function.clear();
     bool first = true;
     bool make_negative = false;
 
@@ -110,13 +112,13 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
     start_input.type = Type::Number;
     start_input.number = 0.0;
     start_input.operation = 0.0;
-    v.push_back(start_input);
+    function.push_back(start_input);
 
     CustomInput start_input2;
     start_input2.type = Type::Operator;
     start_input2.number = 0.0;
     start_input2.operation = '+';
-    v.push_back(start_input2);
+    function.push_back(start_input2);
     for (int i = 0; i < new_input.size(); i++) {
 
         if (new_input[i] != ' ' && new_input[i] != '-') {
@@ -130,7 +132,7 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
                     number *= 10.0;
                     number += (new_input[i + 1] - '0');
                 } else if (new_input[i + 1] == 'x') {
-                    number *= x;
+                    number *= x; //FIX
                 } else if (new_input[i + 1] == '.') {
                     double decimal_rate = 10.0;
                     while (i + 2 < new_input.size() && new_input[i + 2] >= '0' && new_input[i + 2] <= '9') {
@@ -152,92 +154,102 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
             input.type = Type::Number;
             input.number = number;
             input.operation = 0.0;
-            v.push_back(input);
+            function.push_back(input);
 
             if (i+1 < new_input.size() && new_input[i+1] == '(') {
                 CustomInput input;
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = '*';
-                v.push_back(input);
+                function.push_back(input);
             }
 
         } else if (new_input[i] == 'x') {
             CustomInput input;
-            input.type = Type::Number;
+            input.type = Type::Variable;
             if (make_negative) {
-                input.number = -1.0 * x;
+                CustomInput negative;
+                negative.type = Type::Number;
+                negative.number = -1.0;
+                negative.operation = 0.0;
+                function.push_back(negative);
+
+                CustomInput multiply;
+                multiply.type = Type::Operator;
+                multiply.number = 0.0;
+                multiply.operation = '*';
+                function.push_back(multiply);
+
                 make_negative = false;
-            } else {
-                input.number = x;
             }
             input.operation = 0.0;
-            v.push_back(input);
+            input.number = 0.0;
+            function.push_back(input);
 
             if ( (i+1 < new_input.size()) && (new_input[i+1] == '(' || new_input[i+1] == 'x') )  {
                 CustomInput input;
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = '*';
-                v.push_back(input);
+                function.push_back(input);
             }
         } else if (new_input[i] == '*') {
             CustomInput input;
             input.type = Type::Operator;
             input.number = 0.0;
             input.operation = '*';
-            v.push_back(input);
+            function.push_back(input);
         } else if (new_input[i] == '/') {
             CustomInput input;
             input.type = Type::Operator;
             input.number = 0.0;
             input.operation = '/';
-            v.push_back(input);
+            function.push_back(input);
         } else if (new_input[i] == '+') {
             CustomInput input;
             input.type = Type::Operator;
             input.number = 0.0;
             input.operation = '+';
-            v.push_back(input);
+            function.push_back(input);
         } else if (new_input[i] == '-') {
 
             if ((new_input[i - 1] == '+' || new_input[i - 1] == '/' || new_input[i - 1] == '-' || new_input[i-1] == '(' || new_input[i-1] == '*') && !first) {
                 make_negative  = true;
             } else {
                 if (first) {
-                    v.erase(v.begin() + 1, v.begin() + 2);
+                    function.erase(function.begin() + 1, function.begin() + 2);
                 }
                 CustomInput input;
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = '-';
-                v.push_back(input);
+                function.push_back(input);
             }
         } else if (new_input[i] == '^') {
             CustomInput input;
             input.type = Type::Operator;
             input.number = 0.0;
             input.operation = '^';
-            v.push_back(input);
+            function.push_back(input);
         } else if (new_input[i] == '(') {
             CustomInput input;
             input.type = Type::Operator;
             input.number = 0.0;
             input.operation = '(';
-            v.push_back(input);
+            function.push_back(input);
         } else if (new_input[i] == ')') {
             CustomInput input;
             input.type = Type::Operator;
             input.number = 0.0;
             input.operation = ')';
-            v.push_back(input);
+            function.push_back(input);
 
             if (i+1 < new_input.size() && new_input[i+1] == '(') {
                 CustomInput input;
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = '*';
-                v.push_back(input);
+                function.push_back(input);
             }
         } else if (new_input[i] == 's') {
             if (i + 2 < new_input.size() && new_input[i + 1] == 'i' && new_input[i + 2] == 'n') {
@@ -245,7 +257,7 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = 's';
-                v.push_back(input);
+                function.push_back(input);
                 i += 2;
             }
         } else if (new_input[i] == 'c') {
@@ -254,7 +266,7 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = 'c';
-                v.push_back(input);
+                function.push_back(input);
                 i += 2;
             }
         } else if (new_input[i] == 'l') {
@@ -263,13 +275,12 @@ vector<CustomInput> Function :: get_custom_vector(double x, string new_input) {
                 input.type = Type::Operator;
                 input.number = 0.0;
                 input.operation = 'l';
-                v.push_back(input);
+                function.push_back(input);
                 i ++;
             }
         }
     }
 
-    return v;
 }
 
 double Function :: calculate(double num1, double num2, char operation) {
@@ -292,12 +303,23 @@ double Function :: calculate(double num1, double num2, char operation) {
     }
 }
 
-double Function :: evaluate(double x, string new_input, vector<CustomInput> brackets_vector, bool brackets) {
-    vector<CustomInput> custom_vector;
+double Function :: evaluate(double x, string new_input, bool needs_updating, vector<CustomInput> brackets_vector, bool brackets) {
+    if (!brackets && needs_updating) {
+        get_custom_vector(x, new_input);
+    }
     if (!brackets) {
-        custom_vector = get_custom_vector(x, new_input);
-    } else {
-        custom_vector = brackets_vector;
+        return answer(function, x);
+    }
+
+    return answer(brackets_vector, x);
+}
+
+double Function::answer(vector<CustomInput> custom_vector, const double& x) {
+    for (int i = 0; i < custom_vector.size(); i++) {
+        if (custom_vector[i].type == Type::Variable) {
+            custom_vector[i].number = x;
+            cout << x << endl;
+        }
     }
 
     for (int i = 0; i < custom_vector.size(); i++) {
@@ -311,7 +333,7 @@ double Function :: evaluate(double x, string new_input, vector<CustomInput> brac
                     depth--;
                     if (depth == 0) {
                         vector<CustomInput> sub_custom_vector(custom_vector.begin() + i + 1, custom_vector.begin() + j);
-                        double result = evaluate(x, " ", sub_custom_vector, true);
+                        double result = evaluate(x, " ", false, sub_custom_vector, true);
                         custom_vector[i] = CustomInput {Type::Number, result, 0};
                         custom_vector.erase(custom_vector.begin() + i + 1, custom_vector.begin() + j +  1);
                         i--;
@@ -371,4 +393,5 @@ double Function :: evaluate(double x, string new_input, vector<CustomInput> brac
     }
     return custom_vector[0].number;
 }
+
 

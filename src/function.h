@@ -8,7 +8,7 @@
 using namespace std;
 
 enum class Type {
-    Number, Operator
+    Number, Operator, Variable
 };
 
 struct CustomInput {
@@ -43,9 +43,11 @@ private:
     double y_centre;
     vector <float> vertices;
     string input;
+    vector <CustomInput> function;
 
-    vector<CustomInput> get_custom_vector(double x, string new_input);
-    double evaluate(double x, string new_input, vector<CustomInput> brackets_vector = {}, bool brackets = false);
+    void get_custom_vector(double x, string new_input);
+    double evaluate(double x, string new_input, bool needs_updating, vector<CustomInput> brackets_vector = {}, bool brackets = false);
+    double answer(vector<CustomInput> custom_vector, const double& x);
     double calculate(double num1, double num2, char operation);
 
 };
