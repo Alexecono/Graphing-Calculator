@@ -127,12 +127,26 @@ void Function :: get_custom_vector(double x, string new_input) {
         if (new_input[i] >= '0' && new_input[i] <= '9') {
             double number = new_input[i] - '0';
             bool keep_going = true;
+            bool has_x = false;
             while (i + 1 < new_input.size() && keep_going) {
                 if (new_input[i + 1] >= '0' && new_input[i + 1] <= '9') {
                     number *= 10.0;
                     number += (new_input[i + 1] - '0');
                 } else if (new_input[i + 1] == 'x') {
-                    number *= x; //FIX
+                    CustomInput input;
+                    input.type = Type::Number;
+                    input.number = number;
+                    input.operation = 0.0;
+                    function.push_back(input);
+
+                    CustomInput multiply;
+                    multiply.type = Type::Operator;
+                    multiply.number = 0.0;
+                    multiply.operation = '*';
+                    function.push_back(multiply);
+
+                    has_x = true;
+
                 } else if (new_input[i + 1] == '.') {
                     double decimal_rate = 10.0;
                     while (i + 2 < new_input.size() && new_input[i + 2] >= '0' && new_input[i + 2] <= '9') {
@@ -150,11 +164,17 @@ void Function :: get_custom_vector(double x, string new_input) {
                 number *= -1.0;
                 make_negative = false;
             }
-            CustomInput input;
-            input.type = Type::Number;
-            input.number = number;
-            input.operation = 0.0;
-            function.push_back(input);
+
+            if (!has_x) {
+                CustomInput input;
+                input.type = Type::Number;
+                input.number = number;
+                input.operation = 0.0;
+                function.push_back(input);
+            } else {
+                i--;
+            }
+
 
             if (i+1 < new_input.size() && new_input[i+1] == '(') {
                 CustomInput input;
